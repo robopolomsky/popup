@@ -14,6 +14,8 @@ namespace PopUp
     public partial class Form1 : Form
     {
         private readonly List<PopEvent> _popEvents = new List<PopEvent>();
+        private DateTime _lastClickTime;
+
         public Form1()
         {
             for (int i = 8; i <= 12; i++)
@@ -49,12 +51,15 @@ namespace PopUp
         {
             foreach (PopEvent popEvent in _popEvents)
             {
+                if (_lastClickTime.AddMinutes(1) < DateTime.Now)
+                    return;
+
                 if (popEvent.IsTime())
                 {
                     WindowState = FormWindowState.Minimized;
                     Show();
                     WindowState = FormWindowState.Normal;
-                    Thread.Sleep(TimeSpan.FromMinutes(1));
+                    _lastClickTime = DateTime.Now;
                 }
             }
         }

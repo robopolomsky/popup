@@ -14,7 +14,7 @@ namespace PopUp
             _day = day;
             _hour = hour - 1;
             if (_hour < 0) _hour += 24;
-            _minute = minute - 3; // const add -3 minutes before event
+            _minute = minute - 4; // const add -4 minutes before event
             if (_minute < 0) _minute += 60;
             _description = description;
         }
