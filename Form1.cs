@@ -18,30 +18,27 @@ namespace PopUp
 
         public Form1()
         {
-            for (int i = 8; i <= 12; i++)
-                _popEvents.Add(new PopEvent(null, i, 0, "Wilds Boss"));
+            for (int i = 8; i <= 26; i++)
+                _popEvents.Add(new PopEvent("Wilds Boss", i, 0, 4));
 
             for (int i = 13; i <= 20; i++)
-                _popEvents.Add(new PopEvent(null, i, 0, "Wilds Boss, Boss' Lair"));
+                _popEvents.Add(new PopEvent("Boss' Lair", i, 0));
 
-            for (int i = 21; i <= 26; i++)
-                _popEvents.Add(new PopEvent(null, i, 0, "Wilds Boss"));
+            _popEvents.Add(new PopEvent("3V3", 12, 30));
+            _popEvents.Add(new PopEvent("3V3", 20, 30));
 
-            _popEvents.Add(new PopEvent(null, 12, 30, "3V3"));
-            _popEvents.Add(new PopEvent(null, 20, 30, "3V3"));
+            _popEvents.Add(new PopEvent("Zombie Crisis", 13, 30));
+            _popEvents.Add(new PopEvent("Zombie Crisis", 14, 30));
+            _popEvents.Add(new PopEvent("Zombie Crisis", 17, 30));
+            _popEvents.Add(new PopEvent("Zombie Crisis", 18, 30));
+            _popEvents.Add(new PopEvent("Zombie Crisis", 19, 30));
+            _popEvents.Add(new PopEvent("Zombie Crisis", 20, 30));
 
-            _popEvents.Add(new PopEvent(null, 13, 30, "Zombie Crisis"));
-            _popEvents.Add(new PopEvent(null, 14, 30, "Zombie Crisis"));
-            _popEvents.Add(new PopEvent(null, 17, 30, "Zombie Crisis"));
-            _popEvents.Add(new PopEvent(null, 18, 30, "Zombie Crisis"));
-            _popEvents.Add(new PopEvent(null, 19, 30, "Zombie Crisis"));
-            _popEvents.Add(new PopEvent(null, 20, 30, "Zombie Crisis"));
+            _popEvents.Add(new PopEvent("Empire Strike", 19, 30));
 
-            _popEvents.Add(new PopEvent(null, 19, 30, "Empire Strike"));
+            _popEvents.Add(new PopEvent("Alliance War", 21, 00, 0, DayOfWeek.Wednesday));
 
-            _popEvents.Add(new PopEvent(DayOfWeek.Wednesday, 21, 00, "Alliance War"));
-
-            _popEvents.Add(new PopEvent(DayOfWeek.Friday, 21, 00, "Holy Grail War"));
+            _popEvents.Add(new PopEvent("Holy Grail War", 21, 00, 0, DayOfWeek.Friday));
 
             InitializeComponent();
             WindowState = FormWindowState.Minimized;
@@ -49,18 +46,22 @@ namespace PopUp
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (_lastClickTime.AddMinutes(1) > DateTime.Now)
+                return;
+
             foreach (PopEvent popEvent in _popEvents)
             {
-                if (_lastClickTime.AddMinutes(1) < DateTime.Now)
-                    return;
+                if (!popEvent.IsTime()) continue;
 
-                if (popEvent.IsTime())
-                {
-                    WindowState = FormWindowState.Minimized;
-                    Show();
-                    WindowState = FormWindowState.Normal;
-                    _lastClickTime = DateTime.Now;
-                }
+                NLog.LogManager.GetCurrentClassLogger().Debug(popEvent);
+                WindowState = FormWindowState.Minimized;
+                Show();
+                TopMost = true;
+                TopMost = false;
+                WindowState = FormWindowState.Normal;
+                _lastClickTime = DateTime.Now;
+
+                return;
             }
         }
     }
